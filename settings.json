@@ -39,6 +39,8 @@
       "Bash(aws secretsmanager list-secrets:*)",
       "Bash(aws secretsmanager describe-secret --secret-id mmbr-qa-:*)",
       "Bash(aws secretsmanager get-secret-value --secret-id mmbr-qa-:*)",
+      "Bash(aws secretsmanager describe-secret --secret-id mmbr-dev-:*)",
+      "Bash(aws secretsmanager get-secret-value --secret-id mmbr-dev-:*)",
       "Bash(aws ecs list-clusters:*)",
       "Bash(aws ecs list-services --cluster ecs-qa:*)",
       "Bash(aws ecs describe-services --cluster ecs-qa:*)",

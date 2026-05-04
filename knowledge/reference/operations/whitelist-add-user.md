@@ -61,6 +61,29 @@ INSERT INTO mmbr.whitelist (email, role) VALUES
 ON CONFLICT (email) DO NOTHING;
 ```
 
+### Gotcha — `ON CONFLICT DO NOTHING` does NOT update existing roles
+
+If an email is already in the whitelist with the wrong role, `ON CONFLICT (email) DO NOTHING` is a **no-op for that row**. You'll insert the new ones successfully but the existing one stays with its old role, even if the same INSERT statement specifies a new one.
+
+**Variant that bites in batch CTE patterns:** the trick `ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email` is sometimes used to force `RETURNING id` on conflict (so the CTE gets the row id for downstream INSERTs). This **also does not update the role** — `email` is the only column "updated", and to itself. Existing `role` is preserved.
+
+**To upsert role explicitly** (overwrite role of pre-existing entries in the same statement):
+
+```sql
+INSERT INTO mmbr.whitelist (email, role) VALUES
+  ('user@example.com', 'operator')
+ON CONFLICT (email) DO UPDATE SET role = EXCLUDED.role;
+```
+
+Use this with care — overwriting role on conflict is a behavior change. Often safer to inspect first and run a separate `UPDATE` for any role corrections:
+
+```sql
+UPDATE mmbr.whitelist SET role = 'operator'
+WHERE LOWER(email) IN ('user1@example.com', 'user2@example.com');
+```
+
+Roles propagate live through the `users.whitelist_id` FK join, so a role correction takes effect on the user's next request — no re-login required.
+
 ## Two paths to apply it
 
 ### Path A — Recommended: edit `seed.sql` + redeploy + run `db-seed.sh`

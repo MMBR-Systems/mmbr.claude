@@ -51,17 +51,16 @@ The secret may use either prefix style:
 
 ### DBeaver / TablePlus
 
-- Host: `localhost`
+- Host: `127.0.0.1` (**not** `localhost` — see Gotcha 1 below)
 - Port: `5433`
 - Database, User, Password: from the secret
-- **SSL: OFF / disabled** (see SSL section below — this is a tunnel artifact)
+- **SSL: `require`, "Verify CA" / cert validation OFF** (see Gotcha 2 below)
 
 ### psql
 
 ```bash
 PGPASSWORD='<password>' psql \
-  -h localhost -p 5433 \
-  -U '<user>' -d '<dbname>' \
+  "host=127.0.0.1 port=5433 dbname=<db> user=<user> sslmode=require" \
   -v ON_ERROR_STOP=1
 ```
 
@@ -71,9 +70,9 @@ PGPASSWORD='<password>' psql \
 node -e "
 const { Client } = require('pg');
 const c = new Client({
-  host: 'localhost', port: 5433,
+  host: '127.0.0.1', port: 5433,
   database: '<db>', user: '<user>', password: '<pass>',
-  ssl: false,
+  ssl: { rejectUnauthorized: false },
 });
 (async () => {
   await c.connect();
@@ -84,20 +83,50 @@ const c = new Client({
 "
 ```
 
-## SSL: counter-intuitive but important
+## Gotcha 1 — use `127.0.0.1`, not `localhost`
 
-⚠️ Through the SSM port-forward, **disable SSL on the client side** — even though the RDS Proxy itself enforces TLS in production.
+If the workspace's `docker-compose.yml` binds a local Postgres to the same port as the tunnel (commonly `5433`, since `5432` is usually owned by the local Postgres for another service), you'll have **two listeners on port 5433**:
 
-The tunnel terminates locally at `localhost:5433`, where the client's TLS handshake is bound. The proxy expects a TLS client at its own hostname, not at localhost. Either side rejects the cert. Symptoms: `The server does not support SSL connections` (from `pg`) or generic `SSL handshake failed` (from psql).
+- Docker Postgres on `0.0.0.0:5433` and `[::]:5433` (wildcard, IPv4 + IPv6)
+- SSM tunnel on `127.0.0.1:5433` (IPv4 loopback only)
 
-This is a **tunnel-only** artifact. Production code paths (inside ECS, talking to the real proxy DNS) DO use SSL — see `lib/runtime-env.ts` and `scripts/run-migrations.js`, both of which set `ssl: { rejectUnauthorized: false }` by default.
+When a client connects to `localhost`, macOS resolves it via `getaddrinfo` and may prefer `::1` (IPv6) — which routes to **Docker**, not the tunnel. Symptom: `password authentication failed for user "postgres"` (Docker Postgres has different creds than the dev env) and/or `The server does not support SSL connections` (the local container has no TLS).
 
-So:
+**Fix:** always use the literal `127.0.0.1` in the host field. That forces IPv4 and routes to the SSM tunnel's specific binding (which beats the wildcard for `127.0.0.1` connections).
 
-| Connection path | SSL |
+Verify with:
+
+```bash
+lsof -nP -iTCP:5433 -sTCP:LISTEN
+# Expect both:
+#   com.docke ... *:5433        (local Docker, wildcard)
+#   session-manager ... 127.0.0.1:5433  (the tunnel)
+```
+
+If only one listener appears, no conflict — `localhost` is fine.
+
+## Gotcha 2 — SSL through the tunnel: required, but with cert verification disabled
+
+The dev RDS Proxy speaks TLS even through the SSM port-forward. You **need** SSL on the client side, but **certificate verification fails** because the cert is presented for the proxy's real DNS name (`mmbr-<env>-rds-proxy.proxy-...`), and the client is bound to `127.0.0.1`. Disable verification on the client side to bypass the hostname mismatch.
+
+| Client | Setting |
 |---|---|
-| Local pg client → tunnel → RDS Proxy | **OFF** |
-| ECS task → RDS Proxy (production) | **ON** |
+| DBeaver / TablePlus | SSL = `require`, "Verify CA" = OFF |
+| psql | `sslmode=require` (does not verify by default) |
+| Node `pg` | `ssl: { rejectUnauthorized: false }` |
+
+Symptoms when SSL is misconfigured:
+
+- `ssl: false` (off) → `password authentication failed` — the proxy rejects non-SSL connections; pg interprets the close as auth failure
+- `ssl: true` (verified) → SSL handshake fails: cert hostname mismatch
+- `ssl: { rejectUnauthorized: false }` → ✅ works
+
+Production code (inside ECS, hitting the real proxy DNS directly) uses the same `rejectUnauthorized: false` pattern — see `lib/runtime-env.ts` and `scripts/run-migrations.js`. The tunnel doesn't change SSL behavior; what changes is the client-side host name (which is why CA verification fails locally).
+
+| Connection path | SSL setting |
+|---|---|
+| Local pg client → tunnel → RDS Proxy | `require` + verification OFF |
+| ECS task → RDS Proxy (production) | `require` + verification OFF (same; cert is self-signed by AWS internal CA) |
 
 ## Common verification queries
 

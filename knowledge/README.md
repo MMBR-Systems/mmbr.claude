@@ -108,6 +108,7 @@ Step-by-step recipes that follow our conventions.
 |------|-----------|
 | `aws-mmbr.md` | MMBR AWS operational notes |
 | `whitelist-add-user.md` | Add a user to `mmbr.whitelist` (operator/superadmin) and assign plants for operators |
+| `db-connect.md` | Connect to a deployed env's Postgres via the bastion (DBeaver / psql / Node + pg). Includes the SSL-OFF-through-tunnel gotcha and common verification queries |
 
 ### `reference/concepts/`
 

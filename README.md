@@ -2,6 +2,47 @@
 
 This folder configures Claude Code for the MMBR workspace: behavioral rules, slash commands, skills, and permissions. Nested repos (`web-platform/`, `ai-platform/`) may have their own `.claude/` that overrides these inside their scope.
 
+## Bootstrap your workspace
+
+This repo **is not standalone** — it's the `.claude/` folder of a multi-repo workspace. The hooks, commands, and CLAUDE.md references assume specific sibling repos at **depth 1** from the workspace root.
+
+### Expected workspace layout
+
+```
+<workspace-root>/                          # NOT a git repo (just a directory)
+├── .claude/                               # this repo (clone of mmbr.claude)
+├── web-platform/                          # MMBR Next.js frontend
+├── ai-platform/                           # MMBR QAP backend (MMBR-Systems/ai-platform)
+├── qubika-agentic-platform/               # upstream reference (read-only)
+├── .docs/                                 # optional — your personal docs repo
+└── CLAUDE.local.md                        # optional — created inside .claude/, gitignored
+```
+
+### Why depth 1 matters
+
+- `hooks/handoff-reminder.sh` walks `.git` directories at **depth ≤ 2** from workspace root to sum uncommitted changes across nested repos. Deeper nesting → hook misses repos.
+- `commands/sync-index.md` scans **direct children** of the workspace root for the repo index.
+- `CLAUDE.md` references repos by relative paths (`web-platform/.claude/CLAUDE.md`, `ai-platform/...`). Deeper nesting → broken paths.
+
+Putting repos inside a `repos/` subfolder or any deeper structure forces you to edit paths in `CLAUDE.md`, the hooks, and the sync-index command. Not worth it.
+
+### Setup steps
+
+1. Pick a workspace root directory (e.g. `~/Projects/MMBR/`).
+2. Inside it, clone this repo as `.claude/`:
+   ```
+   git clone git@github.com:MMBR-Systems/mmbr.claude.git .claude
+   ```
+3. Clone the product repos as siblings (request access if you don't have it):
+   ```
+   git clone git@github.com:MMBR-Systems/web-platform.git web-platform
+   git clone git@github.com:MMBR-Systems/ai-platform.git ai-platform
+   git clone git@github.com:thisisqubika/qubika-agentic-platform.git qubika-agentic-platform
+   ```
+4. (Optional) create `CLAUDE.local.md` inside `.claude/` for personal overrides — gitignored, auto-loaded each turn.
+5. (Optional) clone or initialize your personal `.docs/` repo at the workspace root for personal worklogs/meetings/plans.
+6. Open Claude Code from the workspace root. The agent loads `.claude/CLAUDE.md` automatically.
+
 ## Layout
 
 ```

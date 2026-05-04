@@ -1,0 +1,83 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote:*)",
+      "Bash(git blame:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git symbolic-ref:*)",
+      "Bash(git stash list:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git rm:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh pr status:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh auth status:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(tree:*)",
+      "Bash(wc:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(pwd)",
+      "Bash(which:*)",
+      "Bash(file:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker compose ps:*)",
+      "Bash(docker logs:*)",
+      "Bash(docker compose logs:*)",
+      "Bash(aws sts get-caller-identity:*)",
+      "Bash(aws secretsmanager list-secrets:*)",
+      "Bash(aws secretsmanager describe-secret --secret-id mmbr-qa-:*)",
+      "Bash(aws secretsmanager get-secret-value --secret-id mmbr-qa-:*)",
+      "Bash(aws ecs list-clusters:*)",
+      "Bash(aws ecs list-services --cluster ecs-qa:*)",
+      "Bash(aws ecs describe-services --cluster ecs-qa:*)",
+      "Bash(aws ecs describe-task-definition --task-definition qa-:*)",
+      "Bash(aws ecs describe-tasks --cluster ecs-qa:*)",
+      "Bash(aws ecs list-tasks --cluster ecs-qa:*)",
+      "Bash(aws rds describe-db-proxies:*)",
+      "Bash(aws rds describe-db-clusters:*)",
+      "Bash(git push --force-with-lease:*)"
+    ],
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/bash-gatekeeper.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/handoff-reminder.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "env": {}
+}

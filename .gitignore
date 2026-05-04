@@ -1,0 +1,7 @@
+settings.local.json
+CLAUDE.local.md
+local/
+*.log
+sessions/
+.handoff-reminded
+.DS_Store

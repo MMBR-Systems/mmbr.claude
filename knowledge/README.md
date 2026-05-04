@@ -107,6 +107,7 @@ Step-by-step recipes that follow our conventions.
 | File | Operation |
 |------|-----------|
 | `aws-mmbr.md` | MMBR AWS operational notes |
+| `whitelist-add-user.md` | Add a user to `mmbr.whitelist` (operator/superadmin) and assign plants for operators |
 
 ### `reference/concepts/`
 

@@ -150,6 +150,16 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+### 5. Consult `.claude/knowledge/` Before Acting
+
+`knowledge/` is **not auto-loaded** — read it deliberately. Before:
+
+- **Non-trivial implementation or design** → check `knowledge/architecture/` for the relevant module/service overview, and `knowledge/decisions/` for ADRs that touch the affected area.
+- **Reviewing code (PR or ad-hoc)** → check `knowledge/decisions/` (avoid flagging deliberate choices) and `knowledge/known-issues/` (false-positive shield). The `pr-review` skill does this automatically.
+- **Confused about a convention, pattern, or workspace layout** → check `knowledge/reference/`.
+
+When relevant content is found, cite it (e.g. `see knowledge/decisions/why-<name>.md`) so reviewers can follow the chain.
+
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
 ## Preserve radar

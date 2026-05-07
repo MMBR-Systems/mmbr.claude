@@ -72,6 +72,7 @@ Active problems with documented workarounds. Auto-loaded by the `pr-review` skil
 | `qbrick-dev-secret-template-defaults.md` | qbrick dev deployed with unmodified `.env.api.example` defaults |
 | `rds-proxy-requires-tls.md` | MMBR RDS Proxy enforces TLS — `?sslmode=require` (Node) vs `?ssl=require` (Python) |
 | `web-platform-secrets-injected-as-json.md` | Whole `mmbr-{env}-web-platform` JSON injected as one `SECRETS` env var; use `getRuntimeEnv` / `requireEnv` helpers |
+| `qap-jwt-secret-triple-sync.md` | The QAP JWT HMAC lives under three different key names (`QAP_JWT_SECRET` in web-platform, `NEXTAUTH_SECRET` in qbrick + backend-ui) — all three must hold the same value or auth breaks |
 
 ### `reference/patterns/` — How to add things
 

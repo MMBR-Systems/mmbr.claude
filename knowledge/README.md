@@ -74,6 +74,7 @@ Active problems with documented workarounds. Auto-loaded by the `pr-review` skil
 | `web-platform-secrets-injected-as-json.md` | Whole `mmbr-{env}-web-platform` JSON injected as one `SECRETS` env var; use `getRuntimeEnv` / `requireEnv` helpers |
 | `qap-jwt-secret-triple-sync.md` | The QAP JWT HMAC lives under three different key names (`QAP_JWT_SECRET` in web-platform, `NEXTAUTH_SECRET` in qbrick + backend-ui) — all three must hold the same value or auth breaks |
 | `postgres-url-password-encoding.md` | Postgres connection URLs need URL-encoded passwords; chars like `:`, `?`, `@`, `(`, `)` break parsers silently with misleading errors (wrong password, ENOTFOUND, ERR_INVALID_URL) |
+| `web-platform-task-def-not-iac-managed.md` | The `web-platform` ECS task def isn't in IaC — CI clones from current AWS state to register each revision, so manual edits propagate forever. Includes recovery procedure (restore from known-good revision) |
 
 ### `reference/patterns/` — How to add things
 

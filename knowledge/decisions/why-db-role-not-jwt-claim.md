@@ -103,5 +103,5 @@ if (user.role !== "superadmin") return forbidden();
 
 ## References
 
-- v2 review issue H1 in `.claude/local/reviews/2026-04-08_feat-dev-rbac-mock-review-v2.md`
+- Surfaced as issue H1 during the v2 RBAC-mock review round (review notes are personal artifacts, not tracked).
 - Commit `1b661d5` — refactor that implemented this decision

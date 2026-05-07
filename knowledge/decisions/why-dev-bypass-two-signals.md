@@ -92,6 +92,6 @@ If they forget, `/chat` redirects to `/login` (because the middleware goes throu
 
 ## References
 
-- v1 review issue H2 in `.claude/local/reviews/2026-04-08_feat-dev-rbac-mock-review.md`
+- Surfaced as issue H2 during the v1 RBAC-mock review round (review notes are personal artifacts, not tracked).
 - Commit `f04aadc` — refactor that implemented this decision
 - `lib/dev-bypass.ts` — the single source of truth for the bypass

@@ -1,6 +1,6 @@
 ---
 name: open-pr
-description: Commit, push, and open a GitHub Pull Request as one orchestrated workflow. Trigger when the user asks to "create a PR", "open a PR", "ship this", "let's PR this", "push and PR", "ready for review", or pastes branch context with PR intent. Each destructive step (commit / push / gh pr create) requires explicit user confirmation — the skill never acts unilaterally on shared state.
+description: Commit, push, and open a GitHub Pull Request as one orchestrated workflow. Trigger when the user asks to "create a PR", "open a PR", "ship this", "let's PR this", "push and PR", "ready for review", or pastes branch context with PR intent. One upfront confirmation covers the entire pipeline (commit + push + PR); the skill still shows the commit message and PR body as drafts before executing so the user can intercept.
 ---
 
 # Open PR — commit + push + PR workflow
@@ -8,7 +8,8 @@ description: Commit, push, and open a GitHub Pull Request as one orchestrated wo
 Orchestrates the three steps that ship work: commit pending changes, push the branch, and open the GitHub PR with a description grounded in the full branch diff. Inspects state first to decide which steps actually need to run.
 
 **Hard rules (never bypass):**
-- Each destructive step (commit, push, `gh pr create` / `gh pr edit`) requires explicit user `y` before running.
+- ONE upfront `y` at Step 1 authorizes the whole pipeline (commit + push + PR). Do not re-prompt for `y` before each individual destructive step. Drafts (commit message, PR body) are still shown so the user can intercept — but proceed unless the user objects.
+- Exceptions where a fresh confirmation IS required mid-pipeline: (a) non-fast-forward push rejection, (b) WIP-looking commits found mid-branch (`fixup!`, `wip`, `tmp`), (c) PR already exists (ask: update / skip).
 - Never `git add -A` / `git add .` — stage files explicitly.
 - Never `--no-verify`, never `--force` (unless the user asks for it by name).
 - Never include secret values (tokens, keys, credentials) in any output.
@@ -35,24 +36,27 @@ Decide which phases need to run:
 - **PR creation** needed: no PR exists yet for this branch.
 - **PR update** needed: PR exists and the user wants the description refreshed.
 
-Print a one-line state summary and wait for `y`:
-> *"Branch `feat/x`: 3 unstaged files, 2 unpushed commits, no PR yet. Will commit → push → open PR. Confirm? (y/N)"*
+Print a one-line state summary AND the proposed plan (branch name, base, which steps will run, draft commit-title shape) and wait for ONE `y`. That `y` authorizes the entire pipeline.
 
-Skip phases that aren't needed (e.g., if working tree is clean and branch is pushed, jump straight to Step 4).
+> *"Branch `feat/x`: 3 unstaged files, 2 unpushed commits, no PR yet. Will commit (title: `feat: ...`) → push (`-u origin feat/x`) → open PR vs `main`. Confirm? (y/N)"*
+
+Skip phases that aren't needed (e.g., if working tree is clean and branch is pushed, jump straight to Step 4 — and reflect that in the summary).
 
 ---
 
 ### Step 2 — Commit (if needed)
 
-Follow the `commit` skill's pipeline (`.claude/skills/commit/SKILL.md`) — same rules apply: detect repo's commit style, no `git add -A`, draft message focused on the *why*, show and confirm, HEREDOC commit, never `--amend` / `--no-verify`. After commit succeeds, return here for Step 3.
+Follow the `commit` skill's pipeline (`.claude/skills/commit/SKILL.md`) for *how* to build the message — detect repo's commit style, no `git add -A`, draft message focused on the *why*, HEREDOC commit, never `--amend` / `--no-verify`. **Difference inside `open-pr`:** the upfront `y` from Step 1 already authorizes the commit, so show the drafted message inline (one block) and commit immediately after — do NOT re-prompt for a separate `y`. If the user objects after seeing the draft, treat that as a new instruction (revise and re-show, then commit).
+
+After commit succeeds, return here for Step 3.
 
 ---
 
 ### Step 3 — Push (if needed)
 
-- No upstream → `git push -u origin <branch>`. Confirm first.
-- Has upstream + unpushed commits → `git push`. Confirm first.
-- On non-fast-forward rejection: surface and ask — don't auto-rebase or `--force`.
+- No upstream → `git push -u origin <branch>`. No re-prompt (Step 1 `y` covers it).
+- Has upstream + unpushed commits → `git push`. No re-prompt.
+- On non-fast-forward rejection: surface and ASK before any recovery — don't auto-rebase or `--force`. This is one of the explicit fresh-confirmation exceptions.
 
 ---
 
@@ -97,7 +101,7 @@ If `update`: regenerate body using the rules below, show the draft, then `gh pr 
 - Link tickets/issues if the branch name or commits reference one (e.g., `MMBR-180` from branch `feat/mmbr-180-x`).
 - Flag anything a reviewer would miss from the diff alone: migrations, env var changes, feature flags, breaking changes.
 
-Show the draft to the user. Wait for `y` before opening.
+Show the drafted title + body inline, then proceed to Step 5 immediately — do NOT re-prompt (Step 1 `y` covers it). If the user objects after seeing the draft, revise and re-show before opening.
 
 ---
 

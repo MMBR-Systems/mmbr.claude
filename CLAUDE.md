@@ -66,7 +66,7 @@ Workspace-level Claude Code config (in `.claude/`) provides skills, slash comman
 
 **Skills** (auto-loaded by intent — no slash needed):
 - `commit` — stage + commit pending changes with the repo's commit style. Trigger: "commit isso", "salva mudanças", commit-only intent (no push, no PR).
-- `open-pr` — full ship-it flow: commit + push + open GitHub PR with description grounded in the full branch diff. Trigger: "create PR", "open PR", "ship this", "ready for review", "push and PR". Inspects state and runs only the steps actually needed; each destructive step (commit / push / `gh pr create`) requires explicit `y`. Hands off to `commit` skill if user says "just commit".
+- `open-pr` — full ship-it flow: commit + push + open GitHub PR with description grounded in the full branch diff. Trigger: "create PR", "open PR", "ship this", "ready for review", "push and PR". Inspects state and runs only the steps actually needed. **One upfront `y` at Step 1 authorizes the whole pipeline** (drafts of commit message + PR body are still shown so you can intercept). Fresh confirmations only for: non-fast-forward push rejection, WIP-looking commits, or PR already exists. Hands off to `commit` skill if user says "just commit".
 - `pr-review` — structured GitHub PR review; writes artifact to `.claude/local/reviews/pr/<self|others>/` (routed by PR authorship vs current `gh` user). Reads `<repo>/.claude/banned-patterns.md` as auto-CRITICAL rules. Inside `web-platform/`, the repo-local claude-code-templates skill takes precedence (with JIRA integration).
 
 **Slash commands** (explicit `/<name>` invocation, deliberate user actions):

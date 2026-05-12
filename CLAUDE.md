@@ -9,6 +9,7 @@
 | `web-platform/` | **Git repo** | Next.js frontend — has its own `.claude/CLAUDE.md` with full project docs |
 | `ai-platform/` | **Git repo (source of truth for QAP)** | MMBR's QAP backend at `MMBR-Systems/ai-platform`. Python FastAPI service that owns conversations, messages, citations, documents (the real QBricks). Seeded as a code drop from `thisisqubika/qubika-agentic-platform` and maintained independently since — histories diverge, and this is the repo that MMBR prod actually runs. Tickets that change QAP behavior land here |
 | `qubika-agentic-platform/` | **Git repo (read-only, upstream reference)** | Upstream QAP at `thisisqubika/qubika-agentic-platform`. Useful only for comparing against `ai-platform/` when suspecting drift or missing framework features. For anything MMBR-specific, read `ai-platform/` instead |
+| `infraestructure-iac/` | **Git repo** | Terraform IaC at `MMBR-Systems/infraestructure-iac` — dev/qa/prod envs, manual `terraform apply` from local (no CI pipeline). Reference: `knowledge/architecture/infrastructure-iac.md` |
 | `.docs/` | **Personal docs (git repo, private)** | Worklogs, meetings, plans, archive, audit log — strictly personal. Handoffs/reviews/reference were migrated into `.claude/` on 2026-05-02. Never cite in PRs or repo files |
 | `.claude/` | **Claude config (git repo, private)** | Workspace agent config + curated knowledge (`knowledge/`) + gitignored personal artifacts (`local/`: handoffs, review drafts) |
 
@@ -29,7 +30,7 @@ Inter-service auth recap (dev):
 
 ## Boundary Rules
 
-- **Repos are the only folders that receive commits.** Code changes go into `web-platform/` or `ai-platform/` depending on the ticket scope.
+- **Repos are the only folders that receive commits.** Code changes go into `web-platform/`, `ai-platform/`, or `infraestructure-iac/` depending on the ticket scope.
 - **`.docs/` and `.claude/` are personal workspaces.** Content from either must NEVER be copied into repository files (`web-platform/`, `ai-platform/`), referenced in PRs, or committed to those repos.
 - **Both are readable.** Use them for context and reasoning, but the output goes into the relevant code repo, not back into the workspace dirs.
 - **Each repo is self-contained.** `web-platform/.claude/` has all project docs an agent needs. Do not create cross-references from repo files to `.docs/` or `.claude/knowledge/`.

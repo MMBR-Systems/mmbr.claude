@@ -14,6 +14,7 @@ This repo **is not standalone** — it's the `.claude/` folder of a multi-repo w
 ├── web-platform/                          # MMBR Next.js frontend
 ├── ai-platform/                           # MMBR QAP backend (MMBR-Systems/ai-platform)
 ├── qubika-agentic-platform/               # upstream reference (read-only)
+├── infraestructure-iac/                   # MMBR Terraform IaC (MMBR-Systems/infraestructure-iac)
 ├── .docs/                                 # optional — your personal docs repo
 └── CLAUDE.local.md                        # optional — created inside .claude/, gitignored
 ```
@@ -38,6 +39,7 @@ Putting repos inside a `repos/` subfolder or any deeper structure forces you to 
    git clone git@github.com:MMBR-Systems/web-platform.git web-platform
    git clone git@github.com:MMBR-Systems/ai-platform.git ai-platform
    git clone git@github.com:thisisqubika/qubika-agentic-platform.git qubika-agentic-platform
+   git clone git@github.com:MMBR-Systems/infraestructure-iac.git infraestructure-iac
    ```
 4. (Optional) create `CLAUDE.local.md` inside `.claude/` for personal overrides — gitignored, auto-loaded each turn.
 5. (Optional) clone or initialize your personal `.docs/` repo at the workspace root for personal worklogs/meetings/plans.

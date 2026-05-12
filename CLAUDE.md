@@ -2,6 +2,13 @@
 
 > This is the workspace root, NOT a git repo. It contains multiple repos and personal developer docs.
 
+## Domain Vocabulary
+
+Read [`CONTEXT.md`](./CONTEXT.md) before non-trivial work. Compact glossary
+for terms that recur in conversation (QAP/QBricks, Plant, Auth cascade,
+Per-workflow API bundle, etc). Full architecture stays in
+`knowledge/architecture/`; this file is for fast term lookup.
+
 ## Workspace Map
 
 | Path | Type | Description |

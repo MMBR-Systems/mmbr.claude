@@ -50,6 +50,7 @@ Putting repos inside a `repos/` subfolder or any deeper structure forces you to 
 ```
 .claude/
 ├── CLAUDE.md                 # workspace map + behavioral guidelines (always loaded)
+├── CONTEXT.md                # domain vocabulary glossary (referenced from CLAUDE.md §0)
 ├── CLAUDE.local.md           # per-developer overrides (gitignored, auto-loaded)
 ├── README.md                 # this file
 ├── settings.json             # permissions, hooks, env (tracked)
@@ -64,10 +65,15 @@ Putting repos inside a `repos/` subfolder or any deeper structure forces you to 
 │   └── sync-index.md
 ├── skills/                   # auto-loaded capabilities — matched by description
 │   ├── README.md
-│   ├── commit/               # stage + commit pending changes
-│   ├── open-pr/              # commit + push + open GitHub PR
-│   ├── pr-review/            # structured GitHub PR review (artifact-first)
-│   └── mmbr-aws-ops/         # MMBR-specific AWS ops handoff
+│   ├── commit/                          # stage + commit pending changes
+│   ├── open-pr/                         # commit + push + open GitHub PR
+│   ├── pr-review/                       # structured GitHub PR review (artifact-first)
+│   ├── mmbr-aws-ops/                    # MMBR-specific AWS ops handoff
+│   ├── grill-me/                        # interview-style alignment before planning
+│   ├── zoom-out/                        # map relevant modules/callers (slash-only)
+│   ├── diagnose/                        # 6-phase bug/perf diagnosis discipline
+│   ├── improve-codebase-architecture/   # find deepening opportunities
+│   └── tdd/                             # red-green-refactor with vertical-slice discipline
 ├── hooks/                    # executable scripts referenced from settings.json
 │   ├── README.md
 │   ├── bash-gatekeeper.sh         # PreToolUse gatekeeper for Bash
@@ -96,6 +102,7 @@ Quick reference for where each artifact lives and how its filename is formatted:
 
 | Artifact | Path | Filename format |
 |---|---|---|
+| Domain glossary | `.claude/CONTEXT.md` | single file, ~2 KB target |
 | Handoff | `.claude/local/handoffs/` | `<YYYY-MM-DD>-<short-summary>.md` |
 | Plan | `.claude/local/plans/` | `<YYYY-MM-DD>-<short-summary>.md` |
 | PR review | `.claude/local/reviews/pr/<self\|others>/` | `<owner>-<repo>-<number>-<summary>.md` |
@@ -108,6 +115,7 @@ Quick reference for where each artifact lives and how its filename is formatted:
 | File | When loaded |
 |------|-------------|
 | `CLAUDE.md` | Always, on every turn. Keep it short. |
+| `CONTEXT.md` | Pulled from `CLAUDE.md §0` on non-trivial work. Push-loaded in practice. |
 | `CLAUDE.local.md` | Always, on every turn (if present). Personal overrides — gitignored. |
 | `commands/*.md` | On explicit `/<name>` invocation. |
 | `skills/*/SKILL.md` | Auto-loaded when the user's request matches the skill's `description` frontmatter. Sub-docs inside each skill are loaded progressively by the skill itself. |

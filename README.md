@@ -1,6 +1,6 @@
 # `.claude/` — workspace agent config
 
-This folder configures Claude Code for the MMBR workspace: behavioral rules, slash commands, skills, and permissions. Nested repos (`web-platform/`, `ai-platform/`) may have their own `.claude/` that overrides these inside their scope.
+This folder configures Claude Code for the MMBR workspace: behavioral rules, slash commands, skills, and permissions. Nested repos (`web-platform/`, `ai-platform/`, `infraestructure-iac/`) may have their own `.claude/` that overrides these inside their scope.
 
 ## Bootstrap your workspace
 
@@ -125,7 +125,7 @@ Quick reference for where each artifact lives and how its filename is formatted:
 
 ## Overrides in nested repos
 
-When Claude works inside `web-platform/` or `ai-platform/`:
+When Claude works inside `web-platform/`, `ai-platform/`, or `infraestructure-iac/`:
 
 1. Repo-local `<repo>/.claude/CLAUDE.md` supplements the workspace one (repo rules win on conflict).
 2. Repo-local `<repo>/.claude/commands/<name>.md` shadows the workspace command of the same name.

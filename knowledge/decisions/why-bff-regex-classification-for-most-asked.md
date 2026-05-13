@@ -18,6 +18,7 @@ The Most Asked Questions endpoint enriches each gap with `category`, `entityType
   - 5 categories: `process | operations | maintenance | procedure | general`
   - 3 entity types: `alarm | equipment | plant_operations`
 - The QAP backend (`ai-platform`) is unaware of these dimensions. `/gaps` returns only `gap_id`, `question`, `confidence`, `times_asked`, `last_occurred`, `plant_id`. The `knowledge_gaps` table has no `category` or `entity` columns.
+- Note: `isProcessQuestion` is still computed (rendered as an inline badge on the row), but is intentionally **not** exposed as a filter chip in PR #57 because it overlaps with the `process` value of `category`. Reconsider only if the two dimensions diverge later.
 
 ## Context
 
@@ -55,7 +56,7 @@ Chosen.
 - **The enum lists are the contract.** The chip filter UI is built around exactly these 5 categories and 3 entity types. Any new value requires a `domain.ts` change and a code review.
 - **Mismatch with Mauricio's planning comment.** Mauricio said in the 2026-05-12 planning that the entity list should be LLM-defined. This implementation does **not** match that vision. Sara confirmed on 2026-05-13 that the regex stub is intentional as a first pass, and the LLM-driven approach is a separate, larger effort outside the MMBR-54 spike.
 - **Code reviewers should not flag `classifyQuestion()` as a bug.** It's a deliberate stub, not an oversight. Refactoring it to call the QAP API or an LLM is out of scope without an accompanying backend initiative.
-- **No backend filtering today.** Because the BFF classifies after fetching, filter params on `/api/gaps/most-asked` (e.g. `?category=&entity=`) must be applied **after** the QAP fetch and **before** pagination math in the BFF handler. This is a known performance limitation: pagination totals reflect the unfiltered set unless the BFF refetches/recomputes.
+- **Filter implementation strategy (PR #57).** The BFF reads `?category=&entity=` query params, validates against the hardcoded enums, and applies the filter in memory after classification. To keep `total` accurate, the route fetches up to 100 rows from QAP (the `/gaps` endpoint's real cap; `limit > 100` returns 502) on every filtered request and paginates locally instead of pushing the filter down. Trade-off: classification + filter scale linearly with rows fetched, capped at 100. Pushing filter params down to QAP would require the same backend migration the LLM-driven initiative needs.
 
 ## Revisit trigger
 

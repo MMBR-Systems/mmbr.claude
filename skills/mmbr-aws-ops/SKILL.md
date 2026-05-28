@@ -11,8 +11,8 @@ and parametrized scripts — your job is to use them, not to recreate them.
 
 ## Source of truth
 
-- **Doc:** [`.claude/knowledge/reference/operations/aws-mmbr.md`](../../../.claude/knowledge/reference/operations/aws-mmbr.md)
-- **Scripts:** [`.claude/knowledge/reference/operations/scripts/`](../../../.claude/knowledge/reference/operations/scripts/)
+- **Doc:** [`.claude/docs/reference/operations/aws-mmbr.md`](../../../.claude/docs/reference/operations/aws-mmbr.md)
+- **Scripts:** [`.claude/docs/reference/operations/scripts/`](../../../.claude/docs/reference/operations/scripts/)
   - `_env.sh` — env → profile/cluster/bastion/RDS lookup (sourced by the others)
   - `bastion-tunnel.sh <env> [local_port]` — SSM port-forward to RDS Proxy
   - `ecs-exec.sh <env> [container]` — interactive shell in the running web-platform task
@@ -29,13 +29,13 @@ close.
 
 When the user asks for any of the recipes above:
 
-1. **Read** [`.claude/knowledge/reference/operations/aws-mmbr.md`](../../../.claude/knowledge/reference/operations/aws-mmbr.md)
+1. **Read** [`.claude/docs/reference/operations/aws-mmbr.md`](../../../.claude/docs/reference/operations/aws-mmbr.md)
    if you have not already. The env table there is authoritative.
 2. **Hand the user the script command**, named explicitly. Do not paste the
    underlying `aws ecs execute-command` / `aws ssm start-session` invocation
    — that defeats the point of having scripts. Example:
    - User: "I need to seed QA"
-   - You: `.claude/knowledge/reference/operations/scripts/db-seed.sh qa`
+   - You: `.claude/docs/reference/operations/scripts/db-seed.sh qa`
 3. **Confirm SSO** before destructive ops. If you are unsure the SSO
    session is active for the env's profile, run
    `aws sts get-caller-identity --profile <profile>` first; the scripts

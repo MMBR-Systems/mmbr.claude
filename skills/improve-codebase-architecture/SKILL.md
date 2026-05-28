@@ -1,6 +1,6 @@
 ---
 name: improve-codebase-architecture
-description: Find deepening opportunities in a codebase, informed by the domain vocabulary in .claude/knowledge/architecture/ and the decisions in .claude/knowledge/decisions/. Use when the user wants to improve architecture, find refactoring opportunities, consolidate tightly-coupled modules, or make a codebase more testable and AI-navigable.
+description: Find deepening opportunities in a codebase, informed by the domain vocabulary in .claude/docs/architecture/ and the decisions in .claude/docs/adr/. Use when the user wants to improve architecture, find refactoring opportunities, consolidate tightly-coupled modules, or make a codebase more testable and AI-navigable.
 ---
 
 # Improve Codebase Architecture
@@ -26,13 +26,13 @@ Key principles (see [LANGUAGE.md](LANGUAGE.md) for the full list):
 - **The interface is the test surface.**
 - **One adapter = hypothetical seam. Two adapters = real seam.**
 
-This skill is _informed_ by the project's domain model. The domain vocabulary in `.claude/knowledge/architecture/` gives names to good seams; ADRs in `.claude/knowledge/decisions/` record decisions the skill should not re-litigate.
+This skill is _informed_ by the project's domain model. The domain vocabulary in `.claude/docs/architecture/` gives names to good seams; ADRs in `.claude/docs/adr/` record decisions the skill should not re-litigate.
 
 ## Process
 
 ### 1. Explore
 
-Read the project's domain vocabulary (`.claude/knowledge/architecture/`) and any ADRs (`.claude/knowledge/decisions/`) in the area you're touching first.
+Read the project's domain vocabulary (`.claude/docs/architecture/`) and any ADRs (`.claude/docs/adr/`) in the area you're touching first.
 
 Then use the Agent tool with `subagent_type=Explore` to walk the codebase. Don't follow rigid heuristics — explore organically and note where you experience friction:
 
@@ -53,9 +53,9 @@ Present a numbered list of deepening opportunities. For each candidate:
 - **Solution** — plain English description of what would change
 - **Benefits** — explained in terms of locality and leverage, and also in how tests would improve
 
-**Use `.claude/knowledge/architecture/` vocabulary for the domain, and [LANGUAGE.md](LANGUAGE.md) vocabulary for the architecture.** If the architecture docs define "Order," talk about "the Order intake module" — not "the FooBarHandler," and not "the Order service."
+**Use `.claude/docs/architecture/` vocabulary for the domain, and [LANGUAGE.md](LANGUAGE.md) vocabulary for the architecture.** If the architecture docs define "Order," talk about "the Order intake module" — not "the FooBarHandler," and not "the Order service."
 
-**ADR conflicts**: if a candidate contradicts an existing ADR in `.claude/knowledge/decisions/`, only surface it when the friction is real enough to warrant revisiting the ADR. Mark it clearly (e.g. _"contradicts decisions/why-orders-stay-shallow.md — but worth reopening because…"_). Don't list every theoretical refactor an ADR forbids.
+**ADR conflicts**: if a candidate contradicts an existing ADR in `.claude/docs/adr/`, only surface it when the friction is real enough to warrant revisiting the ADR. Mark it clearly (e.g. _"contradicts adr/0003-orders-stay-shallow.md — but worth reopening because…"_). Don't list every theoretical refactor an ADR forbids.
 
 Do NOT propose interfaces yet. Ask the user: "Which of these would you like to explore?"
 
@@ -65,7 +65,7 @@ Once the user picks a candidate, drop into a grilling conversation (see the `gri
 
 Side effects happen inline as decisions crystallize:
 
-- **Naming a deepened module after a concept not in `.claude/knowledge/architecture/`?** Offer to add the term there as a new entry, so future architecture work shares the same vocabulary. Create the file lazily if it doesn't exist.
+- **Naming a deepened module after a concept not in `.claude/docs/architecture/`?** Offer to add the term there as a new entry, so future architecture work shares the same vocabulary. Create the file lazily if it doesn't exist.
 - **Sharpening a fuzzy term during the conversation?** Update the relevant architecture doc right there.
-- **User rejects the candidate with a load-bearing reason?** Offer an ADR via the `preserve` skill, framed as: _"Want me to record this as an ADR in `.claude/knowledge/decisions/` so future architecture reviews don't re-suggest it?"_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing — skip ephemeral reasons ("not worth it right now") and self-evident ones.
+- **User rejects the candidate with a load-bearing reason?** Offer an ADR via the `preserve` skill, framed as: _"Want me to record this as an ADR in `.claude/docs/adr/` so future architecture reviews don't re-suggest it?"_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing — skip ephemeral reasons ("not worth it right now") and self-evident ones.
 - **Want to explore alternative interfaces for the deepened module?** See [INTERFACE-DESIGN.md](INTERFACE-DESIGN.md).

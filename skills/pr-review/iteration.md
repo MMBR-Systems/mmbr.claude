@@ -18,7 +18,7 @@ In addition to the standard inputs (PR URL, ticket context, ADRs, known-issues, 
 
 ```yaml
 previous_review:
-  artifact_path: .claude/local/reviews/pr/others/2026-04-26-myorg-api-42.md
+  artifact_path: .docs/reviews/pr/others/2026-04-26-myorg-api-42.md
   iteration: 1
   findings:
     - id: B1
@@ -91,14 +91,14 @@ Now analyze the diff with awareness of what was previously raised:
 The new artifact filename includes `-v<N+1>`:
 
 ```
-.claude/local/reviews/pr/others/2026-04-26-myorg-api-42-v2.md
+.docs/reviews/pr/others/2026-04-26-myorg-api-42-v2.md
 ```
 
 Header includes:
 
 ```markdown
 <!--
-Iteration: 2 (previous: .claude/local/reviews/pr/others/2026-04-26-myorg-api-42.md)
+Iteration: 2 (previous: .docs/reviews/pr/others/2026-04-26-myorg-api-42.md)
 Reviewer base commit: <SHA at start of this review>
 Previous findings: 4 (3 fixed/partial, 1 accepted-as-is)
 -->

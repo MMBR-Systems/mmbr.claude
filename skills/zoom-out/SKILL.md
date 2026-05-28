@@ -4,4 +4,4 @@ description: Tell the agent to zoom out and give broader context or a higher-lev
 disable-model-invocation: true
 ---
 
-I don't know this area of code well. Go up a layer of abstraction. Give me a map of all the relevant modules and callers, using the project's domain vocabulary (see `.claude/knowledge/architecture/` if present).
+I don't know this area of code well. Go up a layer of abstraction. Give me a map of all the relevant modules and callers, using the project's domain vocabulary (see `.claude/docs/architecture/` if present).

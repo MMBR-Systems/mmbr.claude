@@ -35,7 +35,7 @@
 
 ## Repo-specific rules for Claude
 
-<!-- Rules that only apply when working inside this repo. They override the workspace CLAUDE.md on conflict. Keep this section short — detailed patterns belong in .claude/knowledge/. -->
+<!-- Rules that only apply when working inside this repo. They override the workspace CLAUDE.md on conflict. Keep this section short — detailed patterns belong in .claude/docs/. -->
 
 - <rule 1>
 - <rule 2>
@@ -67,7 +67,7 @@ This repo may override workspace-level skills/commands. List them here so humans
 ## Pointers
 
 - Runbooks: `.docs/setup/`
-- ADRs: `.claude/knowledge/decisions/` — the `pr-review` skill auto-loads relevant ADRs for blast-radius filtering.
-- Known issues: `.claude/knowledge/known-issues/` — auto-loaded as false-positive shield by `pr-review`.
-- External API contracts: `.claude/knowledge/reference/external-apis/`
+- ADRs: `.claude/docs/adr/` — the `pr-review` skill auto-loads relevant ADRs for blast-radius filtering.
+- Known issues: `.claude/docs/known-issues/` — auto-loaded as false-positive shield by `pr-review`.
+- External API contracts: `.claude/docs/reference/external-apis/`
 - Banned patterns: `<repo>/.claude/banned-patterns.md` — auto-CRITICAL rules enforced by `pr-review`. Optional file; create only if the team has hard rules to enforce.

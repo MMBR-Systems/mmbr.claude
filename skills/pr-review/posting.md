@@ -8,7 +8,7 @@ Trigger phrases: *"post this review"*, *"send as inline comments"*, *"approve"*,
 
 ## Inputs
 
-- The **artifact path** (e.g. `.claude/local/reviews/pr/<self|others>/<YYYY-MM-DD>-<owner>-<repo>-<number>.md`). If multiple artifacts exist for the same PR, ask which one.
+- The **artifact path** (e.g. `.docs/reviews/pr/<self|others>/<YYYY-MM-DD>-<owner>-<repo>-<number>.md`). If multiple artifacts exist for the same PR, ask which one.
 - The **posting mode**:
   - **Single review body** — one comment containing the whole markdown.
   - **Inline comments** — one GitHub comment per finding, anchored to file + line.

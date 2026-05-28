@@ -44,7 +44,7 @@ RIGHT (vertical):
 
 ### 1. Planning
 
-When exploring the codebase, use the project's domain vocabulary (`.claude/knowledge/architecture/`) so test names and interface vocabulary match the project's language, and check `.claude/knowledge/decisions/` for ADRs in the area you're touching.
+When exploring the codebase, use the project's domain vocabulary (`.claude/docs/architecture/`) so test names and interface vocabulary match the project's language, and check `.claude/docs/adr/` for ADRs in the area you're touching.
 
 Before writing any code:
 

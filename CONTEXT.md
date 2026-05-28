@@ -1,11 +1,11 @@
 # CONTEXT — MMBR domain vocabulary
 
 > Push-loaded glossary. One-line definitions for terms that appear repeatedly
-> in conversation. Full architecture lives in `.claude/knowledge/architecture/`;
+> in conversation. Full architecture lives in `.claude/docs/architecture/`;
 > service layout, deploy details, and boundary rules live in `CLAUDE.md`.
 >
 > Keep entries to one line. If a term needs paragraphs, it belongs in
-> `knowledge/architecture/`, not here.
+> `docs/architecture/`, not here.
 
 ## Repos
 

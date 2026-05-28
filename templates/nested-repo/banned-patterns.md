@@ -21,7 +21,7 @@ Each banned pattern uses this shape:
 - **Detection hint** (optional): <grep pattern, file glob, or context that helps the reviewer find violations>
 ```
 
-Keep each rule under 6 lines. If it needs more, it probably belongs in `.claude/knowledge/decisions/` as an ADR — link from here, don't duplicate.
+Keep each rule under 6 lines. If it needs more, it probably belongs in `.claude/docs/adr/` as an ADR — link from here, don't duplicate.
 
 ## Examples (replace with your team's actual rules)
 

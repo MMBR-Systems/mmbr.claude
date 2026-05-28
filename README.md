@@ -57,7 +57,7 @@ Putting repos inside a `repos/` subfolder or any deeper structure forces you to 
 ├── settings.local.json       # per-user overrides (gitignored)
 ├── .gitignore
 ├── memory/                   # auto-memory store (project + user + feedback)
-├── knowledge/                # curated team-shareable docs (architecture/, decisions/, known-issues/, reference/)
+├── docs/                # curated team-shareable docs (adr/, architecture/, known-issues/, reference/)
 ├── local/                    # gitignored — handoffs/, reviews/, audit.log
 ├── commands/                 # slash commands — invoked explicitly via /<name>
 │   ├── handoff.md
@@ -89,11 +89,10 @@ Putting repos inside a `repos/` subfolder or any deeper structure forces you to 
 
 ## Personal storage convention
 
-After the 2026-05-02 migration, knowledge layers are split as follows:
+As of 2026-05-27, knowledge layers are split as follows:
 
-- **`.claude/knowledge/`** — curated, team-shareable docs (architecture, ADRs, known-issues, reference). Tracked in the `.claude/` repo. Written via `/preserve`.
-- **`.claude/local/`** — gitignored personal artifacts under `.claude/`: `handoffs/`, `reviews/`, `audit.log`. Filesystem-only, no git history.
-- **`.docs/`** — separate private git repo at the workspace root. Strictly personal: worklogs, meetings, plans, archive, artifacts, feedback.
+- **`.claude/docs/`** — curated, team-shareable docs (architecture, ADRs, known-issues, reference). Tracked in the `.claude/` repo. Written via `/preserve`.
+- **`.docs/`** — separate private git repo at the workspace root. ALL personal artifacts live here: worklogs, meetings, plans, handoffs, reviews, memory, archive, artifacts, feedback. `audit.log` and `secrets/` are gitignored within it.
 - **`CLAUDE.local.md`** — gitignored personal overrides auto-loaded each turn (cloned-repo snapshot, personal task workflow).
 
 ## Convention cheatsheet
@@ -103,12 +102,12 @@ Quick reference for where each artifact lives and how its filename is formatted:
 | Artifact | Path | Filename format |
 |---|---|---|
 | Domain glossary | `.claude/CONTEXT.md` | single file, ~2 KB target |
-| Handoff | `.claude/local/handoffs/` | `<YYYY-MM-DD>-<short-summary>.md` |
-| Plan | `.claude/local/plans/` | `<YYYY-MM-DD>-<short-summary>.md` |
-| PR review | `.claude/local/reviews/pr/<self\|others>/` | `<owner>-<repo>-<number>-<summary>.md` |
-| ADR | `.claude/knowledge/decisions/` | `why-<short-name>.md` |
-| Known issue | `.claude/knowledge/known-issues/` | `<short-name>.md` |
-| Architecture | `.claude/knowledge/architecture/` | `<module>/overview.md`, `<module>/<service>.md` |
+| Handoff | `.docs/handoffs/` | `<YYYY-MM-DD>-<short-summary>.md` |
+| Plan | `.docs/plans/` | `<YYYY-MM-DD>-<short-summary>.md` |
+| PR review | `.docs/reviews/pr/<self\|others>/` | `<owner>-<repo>-<number>-<summary>.md` |
+| ADR | `.claude/docs/adr/` | `why-<short-name>.md` |
+| Known issue | `.claude/docs/known-issues/` | `<short-name>.md` |
+| Architecture | `.claude/docs/architecture/` | `<module>/overview.md`, `<module>/<service>.md` |
 
 ## How things get loaded
 
@@ -134,8 +133,8 @@ When Claude works inside `web-platform/`, `ai-platform/`, or `infraestructure-ia
 
 ## House rules
 
-- Keep `CLAUDE.md` under ~200 lines — it loads every turn. Detailed/situational knowledge lives in `.claude/knowledge/` and is pulled on demand.
-- Personal scratch: meetings/plans/worklogs in `.docs/`; handoffs/reviews in `.claude/local/`.
+- Keep `CLAUDE.md` under ~200 lines — it loads every turn. Detailed/situational knowledge lives in `.claude/docs/` and is pulled on demand.
+- Personal scratch lives entirely in `.docs/` (meetings, plans, worklogs, handoffs, reviews, memory).
 - Anything personal that the agent should still see goes in `CLAUDE.local.md` (gitignored, auto-loaded).
 - Never commit secrets to any file in this folder.
 - Review `settings.json` permissions before broadening — auto-approvals apply to every session.

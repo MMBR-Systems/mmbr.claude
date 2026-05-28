@@ -4,7 +4,7 @@
 # Tiers:
 #   HIGH    → block (catastrophic, never legit) — always on
 #   MEDIUM  → block destructive-but-sometimes-legit patterns — opt-in (see extension #4)
-#   LOW     → log to .claude/local/audit.log, allow
+#   LOW     → log to .docs/audit.log, allow
 #
 # Routine destructive patterns (rm -rf foo/, docker volume rm, etc.) are NOT blocked here
 # by default. They are handled upstream by the permission system (`Bash(rm *)` ask rule and
@@ -23,7 +23,7 @@ INPUT=$(cat)
 COMMAND=$(printf '%s' "$INPUT" | jq -r '.tool_input.command // empty')
 [ -z "$COMMAND" ] && exit 0
 
-LOG="${CLAUDE_PROJECT_DIR:-.}/.claude/local/audit.log"
+LOG="${CLAUDE_PROJECT_DIR:-.}/.docs/audit.log"
 mkdir -p "$(dirname "$LOG")" 2>/dev/null || true
 
 log_entry() {

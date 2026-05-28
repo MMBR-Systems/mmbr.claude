@@ -6,7 +6,7 @@ Before `/clear`, capture this session's state so the next agent (or future-you) 
 
 ## Steps
 
-1. Use current timestamp **plus a short kebab-case context slug** for the filename: `.claude/local/handoffs/<YYYY-MM-DD>-<HHMM>-<slug>.md` (24h local).
+1. Use current timestamp **plus a short kebab-case context slug** for the filename: `.docs/handoffs/<YYYY-MM-DD>-<HHMM>-<slug>.md` (24h local).
    - The slug is 3 to 6 words, kebab-case, summarizing the session's main thread so files are scannable without opening them.
    - Examples: `2026-05-01-0742-gap-dashboard-pr-37.md`, `2026-04-22-2319-qbricks-runtime-env-fix.md`, `2026-04-15-0930-figma-mcp-onboarding.md`.
    - The subfolder already indicates this is a handoff — no `handoff-` prefix in the filename.

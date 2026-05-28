@@ -43,7 +43,7 @@ Three-tier gatekeeper plus wrapper detection:
 | 🔴 HIGH | Block (`exit 2`) | `rm -rf /`, `rm -rf ~`, `--no-preserve-root`, `DROP DATABASE`, `mkfs`, `chmod 777 /`, `dd of=/dev/sd*` |
 | 🔴 HIGH-WRAPPER | Block | Denied patterns wrapped in `bash -c "..."`, `sh -c "..."`, `eval "..."` (catches what `deny` can't see) |
 | 🟡 MEDIUM | Block with message | `rm -rf <anything>`, `TRUNCATE`, `docker system prune -a`, `docker volume rm`, `kubectl delete ns` |
-| 🟢 LOW | Log to `.claude/local/audit.log`, allow | `rm`, `git reset`, `git push`, `sudo`, `chmod NNN` |
+| 🟢 LOW | Log to `.docs/audit.log`, allow | `rm`, `git reset`, `git push`, `sudo`, `chmod NNN` |
 
 Tier MEDIUM blocks the first attempt; the user can confirm and Claude reissues. Tier LOW just leaves a paper trail.
 
@@ -100,4 +100,4 @@ The gatekeeper hook is **one** layer in a defense-in-depth strategy:
 
 1. **`settings.json` `deny`** — first line. Blocks at permission-check time, before the hook fires. Fast, dumb, non-bypassable.
 2. **`hooks/bash-gatekeeper.sh`** — second line. Smart regex/contextual checks the deny list can't express.
-3. **`.claude/local/audit.log`** — observation layer. Records what got through for after-the-fact review.
+3. **`.docs/audit.log`** — observation layer. Records what got through for after-the-fact review.

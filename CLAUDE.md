@@ -7,7 +7,7 @@
 Read [`CONTEXT.md`](./CONTEXT.md) before non-trivial work. Compact glossary
 for terms that recur in conversation (QAP/QBricks, Plant, Auth cascade,
 Per-workflow API bundle, etc). Full architecture stays in
-`knowledge/architecture/`; this file is for fast term lookup.
+`docs/architecture/`; this file is for fast term lookup.
 
 ## Workspace Map
 
@@ -16,9 +16,9 @@ Per-workflow API bundle, etc). Full architecture stays in
 | `web-platform/` | **Git repo** | Next.js frontend — has its own `.claude/CLAUDE.md` with full project docs |
 | `ai-platform/` | **Git repo (source of truth for QAP)** | MMBR's QAP backend at `MMBR-Systems/ai-platform`. Python FastAPI service that owns conversations, messages, citations, documents (the real QBricks). Seeded as a code drop from `thisisqubika/qubika-agentic-platform` and maintained independently since — histories diverge, and this is the repo that MMBR prod actually runs. Tickets that change QAP behavior land here |
 | `qubika-agentic-platform/` | **Git repo (read-only, upstream reference)** | Upstream QAP at `thisisqubika/qubika-agentic-platform`. Useful only for comparing against `ai-platform/` when suspecting drift or missing framework features. For anything MMBR-specific, read `ai-platform/` instead |
-| `infraestructure-iac/` | **Git repo** | Terraform IaC at `MMBR-Systems/infraestructure-iac` — dev/qa/prod envs, manual `terraform apply` from local (no CI pipeline). Reference: `knowledge/architecture/infrastructure-iac.md` |
-| `.docs/` | **Personal docs (git repo, private)** | Worklogs, meetings, plans, archive, audit log — strictly personal. Handoffs/reviews/reference were migrated into `.claude/` on 2026-05-02. Never cite in PRs or repo files |
-| `.claude/` | **Claude config (git repo, private)** | Workspace agent config + curated knowledge (`knowledge/`) + gitignored personal artifacts (`local/`: handoffs, review drafts) |
+| `infraestructure-iac/` | **Git repo** | Terraform IaC at `MMBR-Systems/infraestructure-iac` — dev/qa/prod envs, manual `terraform apply` from local (no CI pipeline). Reference: `docs/architecture/infrastructure-iac.md` |
+| `.docs/` | **Personal docs (git repo, private)** | Single home for all personal artifacts: worklogs, meetings, plans, handoffs, reviews, archive, audit log. Never cite in PRs or repo files |
+| `.claude/` | **Claude config (git repo, private)** | Workspace agent config + curated docs (`docs/`) only. **No personal artifacts here** — handoffs, review drafts, and plans all live in `.docs/` (the `.claude/local/` path was retired on 2026-05-28) |
 
 ## Deployed Services
 
@@ -40,8 +40,8 @@ Inter-service auth recap (dev):
 - **Repos are the only folders that receive commits.** Code changes go into `web-platform/`, `ai-platform/`, or `infraestructure-iac/` depending on the ticket scope.
 - **`.docs/` and `.claude/` are personal workspaces.** Content from either must NEVER be copied into repository files (`web-platform/`, `ai-platform/`), referenced in PRs, or committed to those repos.
 - **Both are readable.** Use them for context and reasoning, but the output goes into the relevant code repo, not back into the workspace dirs.
-- **Each repo is self-contained.** `web-platform/.claude/` has all project docs an agent needs. Do not create cross-references from repo files to `.docs/` or `.claude/knowledge/`.
-- **`ai-platform/` is source of truth for QAP.** It owns FastAPI routes, Pydantic schemas, auth, and the contracts `web-platform` consumes. Reference: `.claude/knowledge/reference/external-apis/qap-endpoints.md`. Tickets that change QAP behavior land here.
+- **Each repo is self-contained.** `web-platform/.claude/` has all project docs an agent needs. Do not create cross-references from repo files to `.docs/` or `.claude/docs/`.
+- **`ai-platform/` is source of truth for QAP.** It owns FastAPI routes, Pydantic schemas, auth, and the contracts `web-platform` consumes. Reference: `.claude/docs/reference/external-apis/qap-endpoints.md`. Tickets that change QAP behavior land here.
 - **`qubika-agentic-platform/` is upstream reference only.** Read only when diffing against `ai-platform/` to spot drift or framework changes. Never use as source of truth for MMBR-facing behavior.
 
 ## Key Personal Docs
@@ -50,21 +50,21 @@ Read these when relevant — they provide context but are not project source of 
 
 | Document | When to read |
 |----------|-------------|
-| `.claude/knowledge/README.md` | **First time touching `.claude/knowledge/`** — index of architecture/decisions/patterns/known-issues/prompts/setup/external-apis |
-| `.claude/knowledge/architecture/` | When onboarding a new concept (RBAC, state, auth flow, mocking) |
+| `.claude/docs/README.md` | **First time touching `.claude/docs/`** — index of adr/architecture/known-issues/reference (patterns, prompts, setup, external-apis) |
+| `.claude/docs/architecture/` | When onboarding a new concept (RBAC, state, auth flow, mocking) |
 | `web-platform/docs/AI-PLATFORM-INTEGRATION.md` | When touching anything that talks to QAP (chat routes, qbricks.ts, env vars). Conceptual reference — agents vs workflows, ID spaces, auth, conversation persistence, plant scoping trade-offs. Lives inside `web-platform/` now (moved out of `.docs/` on 2026-04-17). |
-| `.claude/knowledge/decisions/` | When asking "why is it done this way?" |
-| `.claude/knowledge/reference/patterns/` | When adding a feature that matches an established pattern |
-| `.claude/knowledge/known-issues/` | When hitting a weird bug (check if it's a known one first) |
-| `.claude/knowledge/reference/prompts/documentation-review-prompt.md` | When asked to review documentation |
-| `.claude/knowledge/reference/setup/FIGMA_MCP_WORKFLOW.md` | When working with Figma MCP |
-| `.claude/local/reviews/` | When checking previous review findings |
+| `.claude/docs/adr/` | When asking "why is it done this way?" |
+| `.claude/docs/reference/patterns/` | When adding a feature that matches an established pattern |
+| `.claude/docs/known-issues/` | When hitting a weird bug (check if it's a known one first) |
+| `.claude/docs/reference/prompts/documentation-review-prompt.md` | When asked to review documentation |
+| `.claude/docs/reference/setup/FIGMA_MCP_WORKFLOW.md` | When working with Figma MCP |
+| `.docs/reviews/` | When checking previous review findings |
 
 ## How to Work in This Workspace
 
 1. **Starting a task:** `cd` into `web-platform/` or `ai-platform/` and follow its `.claude/CLAUDE.md`.
 2. **Writing code:** Frontend / BFF tickets land in `web-platform/`. QAP backend tickets land in `ai-platform/`. Follow each repo's conventions.
-3. **Writing reviews/PR docs:** Output goes to `.claude/local/reviews/` (gitignored, personal).
+3. **Writing reviews/PR docs:** Output goes to `.docs/reviews/` (personal).
 4. **Committing:** Commit inside the relevant repo (`web-platform/` or `ai-platform/`). Never commit from workspace root.
 
 ## Shared Agent Config
@@ -74,15 +74,15 @@ Workspace-level Claude Code config (in `.claude/`) provides skills, slash comman
 **Skills** (auto-loaded by intent — no slash needed):
 - `commit` — stage + commit pending changes with the repo's commit style. Trigger: "commit isso", "salva mudanças", commit-only intent (no push, no PR).
 - `open-pr` — full ship-it flow: commit + push + open GitHub PR with description grounded in the full branch diff. Trigger: "create PR", "open PR", "ship this", "ready for review", "push and PR". Inspects state and runs only the steps actually needed. **One upfront `y` at Step 1 authorizes the whole pipeline** (drafts of commit message + PR body are still shown so you can intercept). Fresh confirmations only for: non-fast-forward push rejection, WIP-looking commits, or PR already exists. Hands off to `commit` skill if user says "just commit".
-- `pr-review` — structured GitHub PR review; writes artifact to `.claude/local/reviews/pr/<self|others>/` (routed by PR authorship vs current `gh` user). Reads `<repo>/.claude/banned-patterns.md` as auto-CRITICAL rules. Inside `web-platform/`, the repo-local claude-code-templates skill takes precedence (with JIRA integration).
+- `pr-review` — structured GitHub PR review; writes artifact to `.docs/reviews/pr/<self|others>/` (routed by PR authorship vs current `gh` user). Reads `<repo>/.claude/banned-patterns.md` as auto-CRITICAL rules. Inside `web-platform/`, the repo-local claude-code-templates skill takes precedence (with JIRA integration).
 
 **Slash commands** (explicit `/<name>` invocation, deliberate user actions):
-- `/handoff` — capture session state before `/clear` (writes to `.claude/local/handoffs/<YYYY-MM-DD>-<HHMM>-<slug>.md`)
-- `/preserve` — save a durable fact/decision into `.claude/knowledge/<category>/<topic>.md` with `created:`/`updated:` YAML frontmatter
+- `/handoff` — capture session state before `/clear` (writes to `.docs/handoffs/<YYYY-MM-DD>-<HHMM>-<slug>.md`)
+- `/preserve` — save a durable fact/decision into `.claude/docs/` (ADR → `adr/000N-slug.md`, else `architecture/`/`known-issues/`/`reference/`)
 - `/sync-index` — rescan sibling repos and refresh the workspace map (no-op until repo-index sentinels exist)
 
 **Hooks** (auto-fire from `settings.json`):
-- `bash-gatekeeper.sh` — PreToolUse gatekeeper on Bash. Blocks catastrophic patterns (`rm -rf /`, `DROP DATABASE`, etc.), warns on destructive ones (each call individually — no session memory; use `! <cmd>` in the prompt to bypass for a one-off you've already authorized), logs noteworthy ones to `.claude/local/audit.log`.
+- `bash-gatekeeper.sh` — PreToolUse gatekeeper on Bash. Blocks catastrophic patterns (`rm -rf /`, `DROP DATABASE`, etc.), warns on destructive ones (each call individually — no session memory; use `! <cmd>` in the prompt to bypass for a one-off you've already authorized), logs noteworthy ones to `.docs/audit.log`.
 - `handoff-reminder.sh` — when a turn ends with ≥5 changed/untracked files across all nested git repos, suggests `/handoff`. Throttled to once per 4h.
 
 **Banned patterns** (per repo): `<repo>/.claude/banned-patterns.md` — hard-rule violations the `pr-review` skill flags as auto-CRITICAL/HIGH without judgment.
@@ -158,34 +158,34 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
-### 5. Consult `.claude/knowledge/` Before Acting
+### 5. Consult `.claude/docs/` Before Acting
 
-`knowledge/` is **not auto-loaded** — read it deliberately. Before:
+`docs/` is **not auto-loaded** — read it deliberately. Before:
 
-- **Non-trivial implementation or design** → check `knowledge/architecture/` for the relevant module/service overview, and `knowledge/decisions/` for ADRs that touch the affected area.
-- **Reviewing code (PR or ad-hoc)** → check `knowledge/decisions/` (avoid flagging deliberate choices) and `knowledge/known-issues/` (false-positive shield). The `pr-review` skill does this automatically.
-- **Confused about a convention, pattern, or workspace layout** → check `knowledge/reference/`.
+- **Non-trivial implementation or design** → check `docs/architecture/` for the relevant module/service overview, and `docs/adr/` for ADRs that touch the affected area.
+- **Reviewing code (PR or ad-hoc)** → check `docs/adr/` (avoid flagging deliberate choices) and `docs/known-issues/` (false-positive shield). The `pr-review` skill does this automatically.
+- **Confused about a convention, pattern, or workspace layout** → check `docs/reference/`.
 
-When relevant content is found, cite it (e.g. `see knowledge/decisions/why-<name>.md`) so reviewers can follow the chain.
+When relevant content is found, cite it (e.g. `see docs/adr/000N-slug.md`) so reviewers can follow the chain.
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
 ## Preserve radar
 
-Proactively detect moments worth preserving into `.claude/knowledge/`. When you see one of the signals below, surface it **immediately** and offer to draft. Always ask first — never auto-write. Accepting hands off to `/preserve`, which is the single write-path.
+Proactively detect moments worth preserving into `.claude/docs/`. When you see one of the signals below, surface it **immediately** and offer to draft. Always ask first — never auto-write. Accepting hands off to `/preserve` (or `grill-with-docs` captures it inline during a session).
 
 | Signal in conversation | Category | Suggestion |
 |---|---|---|
-| Architectural decision with explicit trade-off ("vamos por X porque Y; alternativa Z foi rejeitada porque W") | `decisions/` | "Parece ADR. Rascunho em `decisions/why-<short>.md`?" |
-| Existing decision being revisited or invalidated ("antes era X, agora Y porque Z") | `decisions/` (update) | "Isso atualiza ADR existente. Editar ou supersede `decisions/why-<name>.md`?" |
+| Architectural decision with explicit trade-off ("vamos por X porque Y; alternativa Z foi rejeitada porque W") | `adr/` | "Parece ADR. Rascunho em `adr/000N-slug.md`?" |
+| Existing decision being revisited or invalidated ("antes era X, agora Y porque Z") | `adr/` (update) | "Isso atualiza ADR existente. Editar ou supersede `adr/000N-slug.md`?" |
 | Bug investigated to root cause that changes mental model of the system, OR recurring bug worth a shield | `known-issues/` | "False-positive shield útil pro `pr-review`. Rascunho em `known-issues/<short>.md`?" |
 | Non-obvious external service behavior discovered (auth, payload shape, rate limit, retry semantics) | `reference/external-apis/` | "Contrato externo. Rascunho em `reference/external-apis/<service>.md`?" |
 | Same procedure executed for the 2nd+ time with non-trivial steps | `reference/patterns/` | "2ª vez nessa sequência. Pattern em `reference/patterns/<name>.md`?" |
 | Operational gotcha (AWS, deploy, env, infra) whose steps aren't in any runbook | `reference/operations/` | "Runbook-worthy. Rascunho em `reference/operations/<topic>.md`?" |
 | New architectural model or flow not yet documented | `architecture/` | "Insight arquitetural. Rascunho em `architecture/<topic>.md`?" |
 
-**Skip — these don't go to knowledge:**
-- Behavioral preferences ("prefiro X") → auto-memory `feedback_*.md`, not `knowledge/`.
+**Skip — these don't go to docs:**
+- Behavioral preferences ("prefiro X") → auto-memory `feedback_*.md`, not `docs/`.
 - Session-state ("voltei depois do almoço", "amanhã continuo daqui") → handoff territory.
 - Trivial fixes without learning (typos, obvious null checks).
 - Anything tied to a specific commit hash as load-bearing — it'll rot.
